@@ -20,12 +20,14 @@ web_agent = Agent(
     markdown=True
 )
 
+
 finance_agent = Agent(
     name="Finance Agent",
     role="Get financial data",
     model=Groq(id="llama-3.3-70b-versatile"),
     #model=OpenAIChat(id="gpt-4o"),
-    tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True)],
+    tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True, stock_fundamentals= True, technical_indicators=True, income_statements=True, key_financial_ratios=True, company_news=True, historical_prices=True)],
+    #description="You are an investment analyst that researches stock prices, analyst recommendations, and stock fundamentals.",
     instructions=["Use tables to display data"],
     storage=SqlAgentStorage(table_name="web_agent", db_file="agents.db"),
     add_history_to_messages=True,
@@ -45,4 +47,6 @@ agent_team = Agent(
 app = Playground(agents=[finance_agent, web_agent,agent_team]).get_app()
 
 if __name__ == "__main__":
-    serve_playground_app("agent:app", reload=True)
+    serve_playground_app("finance_agent_team:app", reload=True)
+
+#agent_team.print_response("Summarize analyst recommendations and share the latest news for NVDA", stream=True)
