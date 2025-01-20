@@ -1,3 +1,4 @@
+import streamlit as st
 from phi.agent import Agent
 from phi.model.openai import OpenAIChat
 from phi.tools.duckduckgo import DuckDuckGo
@@ -32,10 +33,27 @@ coding_research_agent = Agent(
     markdown=True,
     add_datetime_to_instructions=True,
 )
+# Streamlit app setup
+st.title("Coding Research Agent")
+st.write(
+    "An AI-powered assistant to fetch top GitHub repositories and YouTube videos for coding topics."
+)
 
+# Input field for query
+query = st.text_input("Enter a coding-related topic:", "")
+
+if st.button("Search"):
+    if query.strip():
+        with st.spinner("Fetching results..."):
+            response = coding_research_agent.run(query)
+            st.markdown(response.result, unsafe_allow_html=True)
+    else:
+        st.error("Please enter a valid topic to search!")
+
+""""
 app = Playground(agents=[coding_research_agent]).get_app()
 
 if __name__ == "__main__":
-    serve_playground_app("research_agent:app", reload=True)
+    serve_playground_app("research_agent:app", reload=True)"""
 
 #coding_research_agent.print_response("Transformers", stream=True)
