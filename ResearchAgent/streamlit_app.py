@@ -1,6 +1,8 @@
 import sys
 import os
-
+from dotenv import load_dotenv
+env_path = "/Users/princypatel/Desktop/ML Projects/AI-Agents/ResearchAgent/.env"  # Replace with your actual path
+load_dotenv(dotenv_path=env_path)# Access the token
 # Add the project root to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from phi.agent import Agent
@@ -11,11 +13,10 @@ from phi.tools.youtube_tools import YouTubeTools
 from phi.tools.github import GithubTools
 from phi.model.groq import Groq
 from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
-from dotenv import load_dotenv
+
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
-env_path = "/Users/princypatel/Desktop/ML Projects/AI-Agents/ResearchAgent/.env"  # Replace with your actual path
-load_dotenv(dotenv_path=env_path)# Access the token
+
 github_token = os.getenv("GITHUB_ACCESS_TOKEN")
 @st.cache_resource
 def get_agent():
