@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
 load_dotenv()
+# Access the token
+github_token = os.getenv("GITHUB_ACCESS_TOKEN")
 @st.cache_resource
 def get_agent():
     return Agent(
