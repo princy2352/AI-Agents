@@ -5,7 +5,7 @@ from phi.tools.duckduckgo import DuckDuckGo
 from phi.tools.youtube_tools import YouTubeTools
 from phi.tools.github import GithubTools
 from phi.model.groq import Groq
-from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
+from app_constants import SYSTEM_PROMPT, INSTRUCTIONS
 from dotenv import load_dotenv
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
