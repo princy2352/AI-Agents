@@ -23,7 +23,7 @@ def get_agent():
         name="Coding Research Agent",
         model=Gemini(id="gemini-2.0-flash-exp"),
         #model=OpenAIChat(id="gpt-4o"),
-        tools=[GithubTools(), YouTubeTools(),DuckDuckGo()],
+        tools=[GithubTools(access_token=github_token), YouTubeTools(),DuckDuckGo()],
         description= SYSTEM_PROMPT,
         instructions=INSTRUCTIONS,
         
