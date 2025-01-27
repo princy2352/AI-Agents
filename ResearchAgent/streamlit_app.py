@@ -14,8 +14,8 @@ from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
 from dotenv import load_dotenv
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
-load_dotenv()
-# Access the token
+env_path = "/Users/princypatel/Desktop/ML Projects/AI-Agents/ResearchAgent/.env"  # Replace with your actual path
+load_dotenv(dotenv_path=env_path)# Access the token
 github_token = os.getenv("GITHUB_ACCESS_TOKEN")
 @st.cache_resource
 def get_agent():
