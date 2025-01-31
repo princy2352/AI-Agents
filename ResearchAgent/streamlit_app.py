@@ -16,13 +16,14 @@ from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
 
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
-
-github_token = os.getenv("GITHUB_ACCESS_TOKEN")
+github_token = st.secrets["GITHUB_ACCESS_TOKEN"]
+#github_token = os.getenv("GITHUB_ACCESS_TOKEN")
+api_key= st.secrets['GOOGLE_API_KEY']
 @st.cache_resource
 def get_agent():
     return Agent(
         name="Coding Research Agent",
-        model=Gemini(id="gemini-2.0-flash-exp"),
+        model=Gemini(id="gemini-2.0-flash-exp",api_key=api_key),
         #model=OpenAIChat(id="gpt-4o"),
         tools=[GithubTools(access_token=github_token), YouTubeTools(),DuckDuckGo()],
         description= SYSTEM_PROMPT,
