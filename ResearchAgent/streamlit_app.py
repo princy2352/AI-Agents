@@ -16,7 +16,7 @@ from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
 
 from phi.playground import Playground, serve_playground_app
 import streamlit as st
-github_token = st.secrets["GITHUB_ACCESS_TOKEN"]
+github_token = st.secrets['GITHUB_ACCESS_TOKEN']
 #github_token = os.getenv("GITHUB_ACCESS_TOKEN")
 api_key= st.secrets['GOOGLE_API_KEY']
 @st.cache_resource
