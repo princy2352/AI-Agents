@@ -1,0 +1,8 @@
+venv
+.env
+all_pdfs_data.json
+chromadb_prac.py
+output.json
+resume_data.csv
+resumes
+__pycache__
