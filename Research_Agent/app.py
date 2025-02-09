@@ -1,89 +1,67 @@
-# app.py
 import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import page functions from your modules
-from arxiv1 import arxiv_page
-from medium import medium_page
-from streamlit_app import github_page, youtube_page
-from firecrawler import firecrawl_page
-from agno.agent import Agent
-from agno.models.google import Gemini
-from agno.models.openai import OpenAIChat
-
-# Define available models for summarization
-MODELS = {
-    "Gemini (Google)": Gemini(id="gemini-2.0-flash-exp"),
-    "OpenAI (GPT-4)": OpenAIChat(id="gpt-4"),
-}
-
-def get_summary_agent(model):
-    """Return an agent that summarizes the topic using the selected model."""
-    return Agent(
-        model=model,
-        show_tool_calls=True,
-        markdown=True,
-        instructions=[
-            "Summarize the topic in a few concise bullet points. Provide an overview of what it is and what it is used for."
-        ]
-    )
-
-def get_summary(topic, model):
-    agent = get_summary_agent(model)
-    response = agent.run(topic)
-    return response.content
+# Import our module functions
+from overview import get_summary
+from research_papers import arxiv_page
+from blogs import medium_page
+from github_tool import github_page
+from youtube_tool import youtube_page
+from summariser import get_summary_page
 
 def main():
-    st.set_page_config(page_title="AI Research & Content Assistant", layout="wide")
-    st.title("AI Research & Content Assistant")
+    st.set_page_config(page_title="Research Assistant", layout="wide")
+    st.title("Research Assistant")
     
-    # Use session state to store the topic and summary so they don’t refresh on button clicks.
-    if "topic" not in st.session_state:
-        st.session_state.topic = ""
-    if "summary" not in st.session_state:
-        st.session_state.summary = ""
-    if "model_name" not in st.session_state:
-        st.session_state.model_name = list(MODELS.keys())[0]
-
-    # Sidebar: Topic input and model selection (only once)
+    # Main area: Topic input field
+    topic_input = st.text_input("Enter a topic to research:", "AI Agents")
+    st.session_state["topic"] = topic_input  # Save the topic in session state
+    
+    # Sidebar: API key for the main model, model selection, and Firecrawler API key
     with st.sidebar:
-        st.header("Generate Topic Summary")
-        topic_input = st.text_input("Enter a topic:", st.session_state.topic or "AI Agents")
-        selected_model_name = st.selectbox("Select AI Model for summarization:", list(MODELS.keys()), index=list(MODELS.keys()).index(st.session_state.model_name))
-        generate_summary = st.button("Generate Summary")
+        st.header("Configuration")
+        selected_model = st.selectbox("Select AI Model for summarization:", ["Gemini (Google)", "OpenAI (GPT-4)"])
+        api_key_input = st.text_input("Enter API Key for model access (required):", type="password")
+        firecrawler_api_key_input = st.text_input("Enter Firecrawler API Key (required):", type="password")
         
-        # Save selections in session state
-        st.session_state.topic = topic_input
-        st.session_state.model_name = selected_model_name
-
-        if generate_summary and topic_input.strip():
-            with st.spinner("Generating summary..."):
-                summary = get_summary(topic_input, MODELS[selected_model_name])
-            st.session_state.summary = summary
-            st.success("Summary generated!")
-
-    # Main content area
-    st.header("Topic Summary")
-    if st.session_state.summary:
-        st.markdown(st.session_state.summary)
+        st.session_state["api_key"] = api_key_input
+        st.session_state["model_name"] = selected_model
+        st.session_state["firecrawler_api_key"] = firecrawler_api_key_input
+        
+        if not api_key_input.strip():
+            st.error("Main API key is required. Please enter your API key.")
+        if not firecrawler_api_key_input.strip():
+            st.error("Firecrawler API key is required. Please enter your Firecrawler API key.")
+    
+    # Stop further processing if any required key is missing.
+    if not st.session_state.get("api_key", "").strip() or not st.session_state.get("firecrawler_api_key", "").strip():
+        st.stop()
+    
+    # Proceed if a topic is entered
+    if topic_input.strip():
+        st.header(f"Topic: {topic_input}")
+        col1, col2, col3, col4, col5 = st.columns(5)
+        
+        # Overview: Get a high-level summary using summary.py
+        if col1.button("Overview"):
+            with st.spinner("Generating overview summary..."):
+                summary = get_summary(topic_input)
+            st.markdown("### Overview")
+            st.markdown(summary)
+        
+        if col2.button("Get Research Papers"):
+            arxiv_page(topic_input)
+        if col3.button("Get Relevant Articles"):
+            medium_page(topic_input)
+        if col4.button("Get GitHub Repos"):
+            github_page(topic_input)
+        if col5.button("Get YouTube Videos"):
+            youtube_page(topic_input)
+        
+        
     else:
-        st.info("Please use the sidebar to generate a topic summary.")
-
-    st.markdown("## Choose an Option:")
-    col1, col2, col3, col4, col5 = st.columns(5)
-
-    if col1.button("Research Papers"):
-        # Call arxiv_page without regenerating summary
-        arxiv_page(st.session_state.topic)
-    if col2.button("Medium Blogs"):
-        medium_page(st.session_state.topic)
-    if col3.button("GitHub Repos"):
-        github_page(st.session_state.topic)
-    if col4.button("YouTube Videos"):
-        youtube_page(st.session_state.topic)
-    if col5.button("Direct URL Summary"):
-        firecrawl_page()
+        st.info("Please enter a topic to begin.")
 
 if __name__ == "__main__":
     main()

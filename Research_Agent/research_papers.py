@@ -1,37 +1,41 @@
-# arxiv1.py
 import streamlit as st
 from agno.agent import Agent
 from agno.tools.arxiv import ArxivTools
 from agno.models.google import Gemini
 from agno.models.openai import OpenAIChat
 from dotenv import load_dotenv
-from firecrawler import summarize_url  # Import the URL summarization function
-
-# Load environment variables
+from summariser import get_summary_page  # For URL summarization
 load_dotenv()
 
-# Define available models for ArXiv search (you can expand as needed)
-MODELS = {
-    "Gemini (Google)": Gemini(id="gemini-2.0-flash-exp"),
-    "OpenAI (GPT-4)": OpenAIChat(id="gpt-4"),
-}
+def get_model_instance(model_name, api_key):
+    if not api_key.strip():
+        st.error("API key is required.")
+        st.stop()
+    if model_name == "Gemini (Google)":
+        return Gemini(id="gemini-2.0-flash-exp", api_key=api_key)
+    elif model_name == "OpenAI (GPT-4)":
+        return OpenAIChat(id="gpt-4", api_key=api_key)
 
 @st.cache_resource
-def get_arxiv_agent(model):
+def get_arxiv_agent(model_name, api_key):
+    model_instance = get_model_instance(model_name, api_key)
     return Agent(
-        model=model,
+        model=model_instance,
         tools=[ArxivTools()],
-        show_tool_calls=True,
+        
+        description = ['You are an agent that searches arXiv for research papers related to given topic. Your focus is on matching the paper’s title and abstract/content to the topic, not the author names.'],
         instructions=[
-            "Give the title of the paper, authors, a short summary of the paper, and the link to the paper.",
-            "Always include sources.",
-            "Write in points. First point should be the title of the paper. Second should be the name of the authors. Third should be a short summary of the paper. Fourth should be the link to the paper."
+            "Fetch research papers where the title or abstract/content directly relates to the user's topic.",
+            "Do not consider a paper relevant if the match is solely due to the author names.",
+            "For each paper, provide the title, the names of the authors, a short summary of the paper (preferably from the abstract), and a link to the paper.",
+            "Ensure that the paper's title and abstract are clearly related to the topic provided.",
+            "Write the output in bullet points: the first bullet is the title, the second is the authors, the third is the summary, and the fourth is the link."
         ]
     )
 
-def search_arxiv(query, model_name="Gemini (Google)"):
-    selected_model = MODELS[model_name]
-    agent = get_arxiv_agent(selected_model)
+def search_arxiv(query, model_name):
+    api_key = st.session_state.get("api_key", "")
+    agent = get_arxiv_agent(model_name, api_key)
     response = agent.run(f"Search arXiv for '{query}'")
     return response.content
 
@@ -39,20 +43,10 @@ def arxiv_page(topic):
     st.subheader("Research Papers")
     if topic.strip():
         with st.spinner("Searching ArXiv..."):
-            result = search_arxiv(topic)
+            model_name = st.session_state.get("model_name")
+            result = search_arxiv(topic, model_name)
         st.markdown(result, unsafe_allow_html=True)
     else:
         st.error("Please enter a valid topic for research papers.")
     
-    st.markdown("---")
-
-    st.subheader("Or, get a summary of a research paper URL")
-    url = st.text_input("Enter the URL of the research paper:", key="arxiv_url")
-    if st.button("Summarize Paper URL", key="arxiv_url_btn"):
-        if url.strip():
-            with st.spinner("Summarizing paper..."):
-                summary = summarize_url(url)
-            st.markdown("### Paper Summary:")
-            st.markdown(summary)
-        else:
-            st.error("Please enter a valid URL.")
+    
