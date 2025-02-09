@@ -4,7 +4,6 @@ from agno.tools.arxiv import ArxivTools
 from agno.models.google import Gemini
 from agno.models.openai import OpenAIChat
 from dotenv import load_dotenv
-from summariser import get_summary_page  # For URL summarization
 load_dotenv()
 
 def get_model_instance(model_name, api_key):

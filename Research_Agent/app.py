@@ -8,7 +8,6 @@ from research_papers import arxiv_page
 from blogs import medium_page
 from github_tool import github_page
 from youtube_tool import youtube_page
-from summariser import get_summary_page
 
 def main():
     st.set_page_config(page_title="Research Assistant", layout="wide")
