@@ -45,7 +45,7 @@ instructions = [
     
     "For each repository, format the output as follows:",
     
-    "###💻 **[REPOSITORY NAME]** \n",
+    "💻 **[REPOSITORY NAME]** \n",
     "📋 Description: [Clear, concise description] \n",
     "📊 Stats: \n",
     "   • ⭐ Stars: [count] \n",
@@ -71,7 +71,7 @@ instructions = [
     "❌ No relevant GitHub repositories found for this topic."
     "Make sure the font isn't too large."
 ],
-        show_tool_calls=True,
+        
         markdown=True,
     )
 

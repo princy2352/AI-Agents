@@ -31,13 +31,13 @@ def get_arxiv_agent(model_name, api_key):
     
     "For each paper, format the output as follows:",
     
-    "###📄 **[PAPER TITLE]**\n",
+    "📄 **[PAPER TITLE]**\n",
     "👥 Authors: [Names of authors]\n",
     "📅 Published: [Publication Date]\n",
     "🔍 Citations: [Citation Count if available]\n",
     "💡 Key Findings:\n",
-    "   • [3-4 bullet points of main contributions]\n",
-    "📚 Summary: [2-3 sentences from abstract highlighting key insights]\n",
+    "   • [3-4 bullet points of main contributions. One bullet point in each line.]\n",
+    "📚 Summary: [5-6 sentences from abstract highlighting key insights]\n",
     "🔗 Link: [Paper URL]\n",
     
     "---",  # Separator between papers

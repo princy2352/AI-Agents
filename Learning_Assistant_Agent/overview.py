@@ -28,7 +28,7 @@ def get_summary_agent(model_name, api_key):
 instructions = [
     "Create a structured overview of the topic following this format:",
     
-    "###📚 **Topic Overview**",
+    
     
     "🎯 Core Concept:",
     "• [2-3 sentences defining the topic clearly]",

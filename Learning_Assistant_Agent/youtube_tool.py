@@ -40,7 +40,7 @@ def get_youtube_agent():
     
     "For each verified video, format the output as follows:",
     
-    "###🎥 **[VIDEO TITLE]** \n",
+    "🎥 **[VIDEO TITLE]** \n",
     "👤 Creator: [Channel Name] \n",
     
     

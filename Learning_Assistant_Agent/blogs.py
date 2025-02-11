@@ -39,7 +39,7 @@ instructions = [
     
     "For each article, format the output as follows:",
     
-    "###📝 **[ARTICLE TITLE]** \n",
+    "📰 **[ARTICLE TITLE]** \n",
     "✍️ Author: [Author Name] \n",
     "📅 Published: [Publication Date] \n",
     "📌 Summary: [5-6 sentences capturing the core message] \n",
