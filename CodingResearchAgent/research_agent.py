@@ -1,11 +1,12 @@
-import streamlit as st
 from phi.agent import Agent
+from phi.model.groq import Groq
 from phi.model.openai import OpenAIChat
 from phi.tools.duckduckgo import DuckDuckGo
 from phi.tools.youtube_tools import YouTubeTools
 from phi.tools.github import GithubTools
 from dotenv import load_dotenv
 from phi.playground import Playground, serve_playground_app
+import streamlit as st
 
 load_dotenv()
 
@@ -33,22 +34,6 @@ coding_research_agent = Agent(
     markdown=True,
     add_datetime_to_instructions=True,
 )
-# Streamlit app setup
-st.title("Coding Research Agent")
-st.write(
-    "An AI-powered assistant to fetch top GitHub repositories and YouTube videos for coding topics."
-)
-
-# Input field for query
-query = st.text_input("Enter a coding-related topic:", "")
-
-if st.button("Search"):
-    if query.strip():
-        with st.spinner("Fetching results..."):
-            response = coding_research_agent.run(query)
-            st.markdown(response.result, unsafe_allow_html=True)
-    else:
-        st.error("Please enter a valid topic to search!")
 
 """"
 app = Playground(agents=[coding_research_agent]).get_app()
@@ -56,4 +41,4 @@ app = Playground(agents=[coding_research_agent]).get_app()
 if __name__ == "__main__":
     serve_playground_app("research_agent:app", reload=True)"""
 
-#coding_research_agent.print_response("Transformers", stream=True)
+coding_research_agent.print_response("Transformers", stream=True)

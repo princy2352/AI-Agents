@@ -3,18 +3,15 @@ import os
 from dotenv import load_dotenv
 env_path = "/Users/princypatel/Desktop/ML Projects/AI-Agents/ResearchAgent/.env"  # Replace with your actual path
 load_dotenv(dotenv_path=env_path)# Access the token
-# Add the project root to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from phi.agent import Agent
-from phi.model.openai import OpenAIChat
+
 from phi.model.google import Gemini 
 from phi.tools.duckduckgo import DuckDuckGo
 from phi.tools.youtube_tools import YouTubeTools
 from phi.tools.github import GithubTools
-from phi.model.groq import Groq
-from ResearchAgent.app_constants import SYSTEM_PROMPT, INSTRUCTIONS
-
-from phi.playground import Playground, serve_playground_app
+from app_constants import SYSTEM_PROMPT, INSTRUCTIONS
+from similar_topics import get_similar_topics
 import streamlit as st
 github_token = st.secrets['GITHUB_ACCESS_TOKEN']
 #github_token = os.getenv("GITHUB_ACCESS_TOKEN")
@@ -40,7 +37,13 @@ def analyze_topic(agent, topic):
     with st.spinner(f"Searching for results on '{topic}'..."):
         try:
             response = agent.run(topic)
-            return response.content.strip()
+            similar_topics = get_similar_topics(topic)
+
+            # Format the response
+            result_content = response.content.strip()
+            result_content += "\n\n### Related Topics to Explore:\n"
+            result_content += "\n".join(f"- {similar_topic}" for similar_topic in similar_topics)
+            return result_content
         except Exception as e:
             return f"An error occurred: {e}"
 
