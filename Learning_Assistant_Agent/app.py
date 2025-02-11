@@ -8,7 +8,7 @@ from youtube_tool import youtube_page
 
 def set_page_config():
     st.set_page_config(
-        page_title="Learning Assistant AI",
+        page_title="Learning Assistant AI Agent",
         page_icon="🎓",
         layout="wide",
         initial_sidebar_state="expanded"
