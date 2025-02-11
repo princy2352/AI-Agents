@@ -8,7 +8,7 @@ load_dotenv()
 
 def get_model_instance(model_name, api_key):
     if not api_key.strip():
-        st.error("API key is required.")
+        st.error("🔑 API key is required.")
         st.stop()
     if model_name == "Gemini (Google)":
         return Gemini(id="gemini-2.0-flash-exp", api_key=api_key)
@@ -22,14 +22,32 @@ def get_arxiv_agent(model_name, api_key):
         model=model_instance,
         tools=[ArxivTools()],
         
-        description = ['You are an agent that searches arXiv for research papers related to given topic. Your focus is on matching the paper’s title and abstract/content to the topic, not the author names.'],
+        description = ['You are a specialized academic research assistant that discovers and analyzes relevant papers from arXiv. You focus on finding papers that provide significant value to the users research topic.'],
         instructions=[
-            "Fetch research papers where the title or abstract/content directly relates to the user's topic.",
-            "Do not consider a paper relevant if the match is solely due to the author names.",
-            "For each paper, provide the title, the names of the authors, a short summary of the paper (preferably from the abstract), and a link to the paper.",
-            "Ensure that the paper's title and abstract are clearly related to the topic provided.",
-            "Write the output in bullet points: the first bullet is the title, the second is the authors, the third is the summary, and the fourth is the link."
-        ]
+            "Search for 10 research papers with these criteria:",
+    "1. Direct relevance to the topic in title or abstract",
+    "2. Preference for papers with high citation counts and recent publication dates",
+    "3. Focus on influential work in the field",
+    
+    "For each paper, format the output as follows:",
+    
+    "📄 **[PAPER TITLE]**\n",
+    "👥 Authors: [Names of authors]\n",
+    "📅 Published: [Publication Date]\n",
+    "🔍 Citations: [Citation Count if available]\n",
+    "💡 Key Findings:\n",
+    "   • [3-4 bullet points of main contributions]\n",
+    "📚 Summary: [2-3 sentences from abstract highlighting key insights]\n",
+    "🔗 Link: [Paper URL]\n",
+    
+    "---",  # Separator between papers
+    
+    "Additional Guidelines:",
+    "• Present papers in order of relevance and impact",
+    "• Include a mix of foundational and recent papers",
+    "• Highlight practical applications and methodologies",
+    "• Ensure summaries are accessible to the target audience"
+]
     )
 
 def search_arxiv(query, model_name):
@@ -39,9 +57,26 @@ def search_arxiv(query, model_name):
     return response.content
 
 def arxiv_page(topic):
-    st.subheader("Research Papers")
+    
+    st.markdown("""
+        <style>
+        .overview-card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin: 10px 0;
+            border-left: 4px solid #0066cc;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.title("📚 Research Papers")
+    
+    
+
+
     if topic.strip():
-        with st.spinner("Searching ArXiv..."):
+        with st.spinner("🔍 Searching ArXiv..."):
             model_name = st.session_state.get("model_name")
             result = search_arxiv(topic, model_name)
         st.markdown(result, unsafe_allow_html=True)
@@ -49,3 +84,5 @@ def arxiv_page(topic):
         st.error("Please enter a valid topic for research papers.")
     
     
+
+

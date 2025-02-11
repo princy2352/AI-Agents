@@ -27,13 +27,35 @@ def get_blog_agent(model_name, api_key):
         model=model_instance,
         tools=[DuckDuckGoTools(), Crawl4aiTools()],
         
-        description = ['You are an agent that searches for blogs posts and articles related to given topic.'],
-        instructions=[
-            "Fetch the most recent articles and blogs posts related to topic given by the user.",
-            "List the links for the top 10 relevant articles along with a summary of each.",
-            "Ensure the list is sorted by relevance.",
-            "Include source links for each article."
-        ]
+        description = [
+    'You are a specialized content curator who discovers high-quality blog posts and articles, focusing on credibility, readability, and practical value for the user.',
+],
+instructions = [
+    "Search for 10 articles and blog posts using these criteria:",
+    "1. High relevance to the topic",
+    "2. Recent publication (preferably within last 6 months)",
+    "3. Content from reputable sources and established authors",
+    "4. Mix of technical depth and practical applications",
+    
+    "For each article, format the output as follows:",
+    
+    "📝 **[ARTICLE TITLE]** \n",
+    "✍️ Author: [Author Name] \n",
+    "📅 Published: [Publication Date] \n",
+    "📌 Summary: [5-6 sentences capturing the core message] \n",
+    "🔗 Source: [Article URL] \n",
+    "🏢 Platform: [Publishing platform/website] \n",
+    
+    "---",  # Separator between articles
+    
+    "Additional Guidelines:",
+    "• Prioritize articles with hands-on examples or case studies",
+    "• Include a mix of comprehensive guides and focused topics",
+    "• Verify content is accessible (not behind paywalls)",
+    "• Consider reader engagement metrics when available (likes, shares)",
+    
+    "Present the top 10 most relevant articles, ensuring diverse perspectives and depth levels."
+]
     )
 
 def get_medium_blogs(topic,model_name):
@@ -50,7 +72,23 @@ def get_medium_blogs(topic,model_name):
     return response.content
 
 def medium_page(topic):
-    st.subheader("Blogs")
+    st.markdown("""
+        <style>
+        .blog-card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin: 15px 0;
+            border-left: 4px solid #00ab6c;
+        }
+        .blog-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    st.title("📝 Blog Articles")
     if topic.strip():
         with st.spinner("Fetching blogs..."):
             model_name = st.session_state.get("model_name")

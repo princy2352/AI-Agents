@@ -31,22 +31,46 @@ def get_coding_agent():
         name="Coding Research Agent",
         model=model_instance,
         tools=[GithubTools(access_token=github_token), YouTubeTools(), DuckDuckGoTools()],
-        description=["You are a coding assistant that retrieves top GitHub repositories for software development topics.",  
-                    "Your task is to provide the top 10 relevant GitHub repositories related to the given topic, focusing on their quality and popularity."],
-        instructions=["""
-                      1. Evaluate repositories based on: 
-                        - Relevance to the topic  
-                        - Star count (popularity),
-                      2. Provide the following information for each repository:
-                        - Repository Name,  
-                        - A brief description about the repository,  
-                        - Star count (include a ⭐ emoji after the star count),  
-                        - Link to the repository.
-
-                      Formatting:  
-                        - Use bullet points for each repository.
-                        - If no relevant repositories are found, clearly state:  
-                            "No relevant GitHub repositories found." """],
+        description = [
+    "You are a specialized code repository curator who identifies the most valuable and well-maintained GitHub projects, focusing on code quality, community engagement, and practical implementation.",
+    "Your goal is to find repositories that offer both learning value and production-ready solutions."
+],
+instructions = [
+    "Search for GitHub repositories using these evaluation criteria:",
+    "1. Primary Metrics:",
+    "   • Direct relevance to the topic",
+    "   • Active maintenance (recent commits)",
+    "   • Community engagement level",
+    "   • Documentation quality",
+    
+    "For each repository, format the output as follows:",
+    
+    "💻 **[REPOSITORY NAME]** \n",
+    "📋 Description: [Clear, concise description] \n",
+    "📊 Stats: \n",
+    "   • ⭐ Stars: [count] \n",
+    "   • 🔄 Forks: [count] \n",
+    
+    "📚 Key Features: \n",
+    "   • [3-4 main features or capabilities] \n",
+    "🔧 Tech Stack: [Main technologies used] \n",
+    "📖 Documentation: [Documentation quality: Excellent/Good/Basic] \n",
+    "🔗 Link: [Repository URL] \n",
+    
+    "---",  # Separator between repositories
+    
+    "Additional Considerations:",
+    "• Ensure repositories are actively maintained",
+    "• Check for comprehensive README files",
+    "• Verify presence of example code or demos",
+    "• Consider issue response times and community support",
+    
+    "Present the top 10 repositories sorted by overall value (combination of stars, activity, and relevance).",
+    
+    "If no relevant repositories are found, state:",
+    "❌ No relevant GitHub repositories found for this topic."
+    "Make sure the font isn't too large."
+],
         show_tool_calls=True,
         markdown=True,
     )
@@ -57,7 +81,24 @@ def get_coding_research(topic):
     return response.content
 
 def github_page(topic):
-    st.subheader("GitHub Repositories")
+    st.markdown("""
+        <style>
+        .repo-card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        .repo-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.title("💻 GitHub Repositories")
     if topic.strip():
         with st.spinner("Fetching GitHub repositories..."):
             query = f"List the top GitHub repositories for the topic '{topic}' along with brief descriptions and links."

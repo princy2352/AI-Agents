@@ -29,17 +29,48 @@ def get_youtube_agent():
         name="Youtube Agent",
         model=model_instance,
         tools=[DuckDuckGoTools(),YouTubeTools() ],
-        description=["You are a coding assistant that retrieves top YouTube videos given topics.",  
-                    "Your task is to find the top 10 related YouTube videos about the given topic, prioritizing informative, highly-rated, and recent content.",  
-                    ],
-                     instructions=["""
-                      - Find the top 10 related YouTube videos about the given topic.
-    - Prioritize videos that are:
-        - Informative,
-        - Highly rated,
-        - Recent.
-Always include sources.                                    """],
-        show_tool_calls=True,
+        description = [
+            "You are a specialized educational content curator who identifies high-quality YouTube videos by accessing them through official YouTube API and tools.",
+            "Your goal is to find verified, accessible videos that provide clear, accurate learning content."],
+    instructions = [
+    "Search for and verify YouTube videos using these steps:",
+    "1. IMPORTANT: Only include videos with valid youtube.com or youtu.be URLs",
+    "2. Verify each video URL before including it",
+    "3. Format URLs as 'https://www.youtube.com/watch?v=[VIDEO_ID]'",
+    
+    "For each verified video, format the output as follows:",
+    
+    "🎥 **[VIDEO TITLE]** \n",
+    "👤 Creator: [Channel Name] \n",
+    
+    
+    "📝 Content Overview: \n",
+    "   • [3-4 key topics covered] \n",
+    
+    "💡 Highlights: \n",
+    "   • Teaching style \n",
+    "   • Practical examples \n",
+    "   • Visual aids/demonstrations \n",
+    
+    "🎯 Best for: [Beginner/Intermediate/Advanced]",
+    "🔗 Link: [Video URL]",
+    
+    "---",  # Separator between videos
+    
+    "Quality Control Guidelines:",
+    "• Double-check all URLs for validity",
+    "• Ensure videos are publicly accessible",
+    "• Verify videos are not shorts, livestreams, or premieres",
+    "• Confirm videos are in English (or requested language)",
+    
+    "IMPORTANT URL RULES:",
+    "1. Only use full YouTube URLs (https://www.youtube.com/watch?v=)",
+    "2. Do not include playlist parameters",
+    "3. Do not include timestamp parameters",
+    "4. Do not include channel URLs",
+    "5. Verify each URL exists before including it"
+],
+        
         markdown=True,
     )
 
@@ -50,7 +81,24 @@ def get_youtube_research(topic):
 
 
 def youtube_page(topic):
-    st.subheader("YouTube Videos")
+    st.markdown("""
+        <style>
+        .video-card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        .video-stats {
+            color: #666;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.title("🎥 YouTube Videos")
     if topic.strip():
         with st.spinner("Fetching YouTube videos..."):
             query = f"List the top 10 YouTube videos about '{topic}' along with brief descriptions and links."
