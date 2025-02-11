@@ -83,7 +83,7 @@ def main_content():
         st.session_state["topic"] = topic
         
         # Service selection with improved layout
-        st.markdown("### Select Research Service")
+        st.markdown("### Select the type of resource")
         
         col1, col2, col3, col4, col5 = st.columns(5)
         
@@ -127,7 +127,7 @@ def main_content():
             status.text("Generating overview...")
             progress.progress(50)
             summary = get_summary(topic)
-            st.markdown("### 📝 Topic Overview")
+            
             st.markdown(summary)
             progress.progress(100)
             status.empty()

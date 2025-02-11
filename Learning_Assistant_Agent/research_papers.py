@@ -31,7 +31,7 @@ def get_arxiv_agent(model_name, api_key):
     
     "For each paper, format the output as follows:",
     
-    "📄 **[PAPER TITLE]**\n",
+    "###📄 **[PAPER TITLE]**\n",
     "👥 Authors: [Names of authors]\n",
     "📅 Published: [Publication Date]\n",
     "🔍 Citations: [Citation Count if available]\n",

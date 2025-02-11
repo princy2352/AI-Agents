@@ -45,7 +45,7 @@ instructions = [
     
     "For each repository, format the output as follows:",
     
-    "💻 **[REPOSITORY NAME]** \n",
+    "###💻 **[REPOSITORY NAME]** \n",
     "📋 Description: [Clear, concise description] \n",
     "📊 Stats: \n",
     "   • ⭐ Stars: [count] \n",
