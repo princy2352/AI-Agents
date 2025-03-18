@@ -1,11 +1,11 @@
 import streamlit as st
 from agno.agent import Agent
-from agno.tools.duckduckgo import DuckDuckGoTools
+from agno.tools.googlesearch import GoogleSearchTools
 from agno.tools.youtube import YouTubeTools
 from agno.models.openai import OpenAIChat
 from agno.models.google import Gemini
-from dotenv import load_dotenv
-load_dotenv()
+"""from dotenv import load_dotenv
+load_dotenv()"""
 
 def get_model_instance(model_name, api_key):
     if not api_key.strip():
@@ -28,7 +28,7 @@ def get_youtube_agent():
     return Agent(
         name="Youtube Agent",
         model=model_instance,
-        tools=[DuckDuckGoTools(),YouTubeTools() ],
+        tools=[GoogleSearchTools(),YouTubeTools() ],
         description = [
             "You are a specialized educational content curator who identifies high-quality YouTube videos by accessing them through official YouTube API and tools.",
             "Your goal is to find verified, accessible videos that provide clear, accurate learning content."],
@@ -101,7 +101,7 @@ def youtube_page(topic):
     st.title("🎥 YouTube Videos")
     if topic.strip():
         with st.spinner("Fetching YouTube videos..."):
-            query = f"List the top 10 YouTube videos about '{topic}' along with brief descriptions and links."
+            query = f"List the top YouTube videos about '{topic}' along with brief descriptions and links."
             result = get_youtube_research(query)
         st.markdown(result)
     else:
